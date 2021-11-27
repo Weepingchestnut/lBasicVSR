@@ -1,4 +1,5 @@
 import argparse
+import copy
 import os
 import os.path as osp
 import time
@@ -7,12 +8,13 @@ import torch
 
 import lmmcv
 from lmmSR.mmsr.apis import set_random_seed
+from lmmSR.mmsr.datasets import build_dataset
 from lmmSR.mmsr.models import build_model
 from lmmcv import Config
 from lmmcv.runner import init_dist
 
 from lmmSR.mmsr import __version__
-from lmmSR.mmsr import get_root_logger, collect_env
+from lmmSR.mmsr.utils import get_root_logger, collect_env
 
 
 def parse_args():
