@@ -1,7 +1,7 @@
-from mmcv.utils import collect_env as collect_base_env
+from lmmcv.utils import collect_env as collect_base_env
+from lmmcv.utils import get_git_hash
 
 from lmmSR import mmsr
-from lmmcv import get_git_hash
 
 
 def collect_env():
