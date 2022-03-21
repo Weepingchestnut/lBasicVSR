@@ -22,6 +22,33 @@ def build(cfg, registry, default_args=None):
     return build_from_cfg(cfg, registry, default_args)
 
 
+def build_backbone(cfg):
+    """Build backbone.
+
+    Args:
+        cfg (dict): Configuration for building backbone.
+    """
+    return build(cfg, BACKBONES)
+
+
+def build_component(cfg):
+    """Build component.
+
+    Args:
+        cfg (dict): Configuration for building component.
+    """
+    return build(cfg, COMPONENTS)
+
+
+def build_loss(cfg):
+    """Build loss.
+
+    Args:
+        cfg (dict): Configuration for building loss.
+    """
+    return build(cfg, LOSSES)
+
+
 def build_model(cfg, train_cfg=None, test_cfg=None):
     """Build model.
 

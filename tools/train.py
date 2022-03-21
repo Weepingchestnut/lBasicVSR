@@ -8,9 +8,9 @@ import torch
 
 import lmmcv
 from lmmSR.mmsr.apis import set_random_seed
-from lmmSR.mmsr.datasets import build_dataset
 from lmmSR.mmsr.models import build_model
-from lmmSR.mmsr.utils import get_root_logger, collect_env
+
+from lmmSR.mmsr.utils import get_root_logger, collect_env, setup_multi_processes
 from lmmcv import Config
 from lmmcv.runner import init_dist
 
@@ -59,7 +59,11 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
-    # set cudnn_benchmark
+
+    # set multi-process settings（设置多进程相关设置）
+    setup_multi_processes(cfg)
+
+    # set cudnn_benchmark（设置cudnn）
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     # update configs according to CLI args
@@ -69,11 +73,11 @@ def main():
         cfg.resume_from = args.resume_from
     cfg.gpus = args.gpus
 
-    if args.autoscale_lr:
+    if args.autoscale_lr:   # 变尺度学习率
         # apply the linear scaling rule (https://arxiv.org/abs/1706.02677)
         cfg.optimizer['lr'] = cfg.optimizer['lr'] * cfg.gpus / 8
 
-    # init distributed env first, since logger depends on the dist info.
+    # init distributed env first, since logger depends on the dist info.（首先初始化分布式环境，由于 logger 依赖于分布式信息）
     if args.launcher == 'none':
         distributed = False
     else:
@@ -82,46 +86,47 @@ def main():
 
     # create work_dir
     lmmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))  # osp.abspath(): 获取当前脚本的完整路径
-    # init the logger before other steps
+    # init the logger before other steps（初始化日志）
     timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     log_file = osp.join(cfg.work_dir, f'{timestamp}.log')
     logger = get_root_logger(log_file=log_file, log_level=cfg.log_level)
 
-    # log env info
+    # log env info（记录环境信息）
     env_info_dict = collect_env.collect_env()
     env_info = '\n'.join([f'{k}: {v}' for k, v in env_info_dict.items()])
     dash_line = '-' * 60 + '\n'
     logger.info('Environment info:\n' + dash_line + env_info + '\n' + dash_line)
 
-    # log some basic info
+    # log some basic info（记录基本环境信息）
     logger.info('Distributed training: {}'.format(distributed))
     logger.info('mmsr Version: {}'.format(__version__))
     logger.info('Config:\n{}'.format(cfg.text))
 
-    # set random seeds
+    # set random seeds（设置随机种子）
     if args.seed is not None:
         logger.info('Set random seed to {}, deterministic: {}'.format(
             args.seed, args.deterministic))
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
 
+    # 构建模型
     model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
-    datasets = [build_dataset(cfg.data.train)]
-    if len(cfg.workflow) == 2:
-        val_dataset = copy.deepcopy(cfg.data.val)
-        val_dataset.pipeline = cfg.data.train.pipeline
-        datasets.append(build_dataset(val_dataset))
-    if cfg.checkpoint_config is not None:
-        # save version, config file content and class names in
-        # checkpoints as meta data
-        cfg.checkpoint_config.meta = dict(
-            mmedit_version=__version__,
-            config=cfg.text,
-        )
+    # datasets = [build_dataset(cfg.data.train)]
+    # if len(cfg.workflow) == 2:
+    #     val_dataset = copy.deepcopy(cfg.data.val)
+    #     val_dataset.pipeline = cfg.data.train.pipeline
+    #     datasets.append(build_dataset(val_dataset))
+    # if cfg.checkpoint_config is not None:
+    #     # save version, config file content and class names in
+    #     # checkpoints as meta data
+    #     cfg.checkpoint_config.meta = dict(
+    #         mmedit_version=__version__,
+    #         config=cfg.text,
+    #     )
 
-    # meta information
+    # meta information（存储所有元信息，即一些环境、配置信息）
     meta = dict()
     if cfg.get('exp_name', None) is None:
         cfg['exp_name'] = osp.splitext(osp.basename(cfg.work_dir))[0]
@@ -131,14 +136,16 @@ def main():
     meta['env_info'] = env_info
 
     # add an attribute for visualization convenience
-    train_model(
-        model,
-        datasets,
-        cfg,
-        distributed=distributed,
-        validate=(not args.no_validate),
-        timestamp=timestamp,
-        meta=meta)
+    # train_model(
+    #     model,
+    #     datasets,
+    #     cfg,
+    #     distributed=distributed,
+    #     validate=(not args.no_validate),
+    #     timestamp=timestamp,
+    #     meta=meta)
+
+    print(cfg)
 
 
 if __name__ == '__main__':

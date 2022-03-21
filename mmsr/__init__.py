@@ -17,3 +17,7 @@ except ImportError:
                 digit_ver.append(int(patch_version[1]))
         return digit_ver
 
+
+MMCV_MIN = '1.3.1'
+MMCV_MAX = '1.5'
+
