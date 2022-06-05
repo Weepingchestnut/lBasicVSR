@@ -1,11 +1,10 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import numbers
 import os.path as osp
 
 import lmmcv
 from lmmcv.runner import auto_fp16
 
-from mmedit.core import psnr, ssim, tensor2img
+from lmmSR.mmsr.core import psnr, ssim, tensor2img
 from ..base import BaseModel
 from ..builder import build_backbone, build_loss
 from ..registry import MODELS
@@ -17,12 +16,9 @@ class BasicRestorer(BaseModel):
 
     It must contain a generator that takes an image as inputs and outputs a
     restored image. It also has a pixel-wise loss for training.
-    (它必须包含一个接收图像作为输入和输出恢复图像的生成器。
-    它在训练方面也有像素方面的损失。)
 
     The subclasses should overwrite the function `forward_train`,
     `forward_test` and `train_step`.
-    (子类应该重写函数 'forward_train'，'forward_test' 和 'train_step'。)
 
     Args:
         generator (dict): Config for the generator structure.

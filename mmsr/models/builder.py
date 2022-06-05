@@ -1,5 +1,4 @@
 import torch.nn as nn
-
 from lmmcv import build_from_cfg
 
 from .registry import BACKBONES, COMPONENTS, LOSSES, MODELS
@@ -13,7 +12,7 @@ def build(cfg, registry, default_args=None):
         registry (obj): ``registry`` object.
         default_args (dict, optional): Default arguments. Defaults to None.
     """
-    if isinstance(cfg, list):       # 判断一个对象是否是一个已知的类型 isinstance(obj实例对象, classinfo类名)
+    if isinstance(cfg, list):
         modules = [
             build_from_cfg(cfg_, registry, default_args) for cfg_ in cfg
         ]

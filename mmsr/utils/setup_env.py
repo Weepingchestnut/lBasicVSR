@@ -7,8 +7,8 @@ import torch.multiprocessing as mp
 
 
 def setup_multi_processes(cfg):
-    """Setup multi-processing environment variables.    设置多进程环境变量"""
-    # set multi-process start method as `fork` to speed up the training     启动多进程的方式为“fork”来加速训练
+    """Setup multi-processing environment variables."""
+    # set multi-process start method as `fork` to speed up the training
     if platform.system() != 'Windows':
         mp_start_method = cfg.get('mp_start_method', 'fork')
         current_method = mp.get_start_method(allow_none=True)

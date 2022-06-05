@@ -1,9 +1,9 @@
 import torch
-from mmcv.runner import load_checkpoint
+from lmmcv.runner import load_checkpoint
 from torch import nn
 
-from mmedit.models.registry import BACKBONES
-from mmedit.utils import get_root_logger
+from lmmSR.mmsr.models.registry import BACKBONES
+from lmmSR.mmsr.utils import get_root_logger
 
 
 class DenseLayer(nn.Module):

@@ -1,1 +1,1 @@
-from .basic_restorer import *
+from .basic_restorer import BasicRestorer

@@ -1,6 +1,6 @@
 import lmmcv
 
-from .version import __version__
+from .version import __version__, version_info
 
 try:
     from lmmcv.utils import digit_version
@@ -18,6 +18,16 @@ except ImportError:
         return digit_ver
 
 
-MMCV_MIN = '1.3.1'
-MMCV_MAX = '1.5'
+LMMCV_MIN = '1.0.0'
+LMMCV_MAX = '1.6'
 
+lmmcv_min_version = digit_version(LMMCV_MIN)
+lmmcv_max_version = digit_version(LMMCV_MAX)
+lmmcv_version = digit_version(lmmcv.__version__)
+
+
+assert (lmmcv_min_version <= lmmcv_version <= lmmcv_max_version), \
+    f'mmcv=={lmmcv.__version__} is used but incompatible. ' \
+    f'Please install mmcv-full>={lmmcv_min_version}, <={lmmcv_max_version}.'
+
+__all__ = ['__version__', 'version_info']

@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from collections.abc import Sequence
 
 from lmmcv.utils import build_from_cfg
@@ -8,7 +7,7 @@ from ..registry import PIPELINES
 
 @PIPELINES.register_module()
 class Compose:
-    """Compose a data pipeline with a sequence of transforms.（用 transforms 序列组成数据流水线）
+    """Compose a data pipeline with a sequence of transforms.
 
     Args:
         transforms (list[dict | callable]):

@@ -8,16 +8,16 @@ import torch.nn as nn
 class BaseModel(nn.Module, metaclass=ABCMeta):
     """Base model.
 
-    All models should subclass it.(所有模型均为其子类)
-    All subclass should overwrite:（所有子类应该重写：）
+    All models should subclass it.
+    All subclass should overwrite:
 
-        ``init_weights``, supporting to initialize models.（支持初始化模型）
+        ``init_weights``, supporting to initialize models.
 
-        ``forward_train``, supporting to forward when training.（支持训练时前向传播）
+        ``forward_train``, supporting to forward when training.
 
-        ``forward_test``, supporting to forward when testing.（支持测试时前向传播）
+        ``forward_test``, supporting to forward when testing.
 
-        ``train_step``, supporting to train one step when training.（支持训练时训练一步）
+        ``train_step``, supporting to train one step when training.
     """
 
     @abstractmethod

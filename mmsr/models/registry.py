@@ -1,6 +1,7 @@
+from lmmcv.cnn import MODELS as LMMCV_MODELS
 from lmmcv.utils import Registry
 
-MODELS = Registry('model')
-BACKBONES = Registry('backbone')
-COMPONENTS = Registry('component')
-LOSSES = Registry('loss')
+MODELS = Registry('model', parent=LMMCV_MODELS)
+BACKBONES = MODELS
+COMPONENTS = MODELS
+LOSSES = MODELS

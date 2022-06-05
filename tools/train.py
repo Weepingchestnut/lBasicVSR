@@ -4,17 +4,17 @@ import os
 import os.path as osp
 import time
 
-import torch
-
 import lmmcv
-from lmmSR.mmsr.apis import set_random_seed
-from lmmSR.mmsr.models import build_model
-
-from lmmSR.mmsr.utils import get_root_logger, collect_env, setup_multi_processes
-from lmmcv import Config
+import torch
+import torch.distributed as dist
+from lmmcv import Config, DictAction
 from lmmcv.runner import init_dist
 
 from lmmSR.mmsr import __version__
+from lmmSR.mmsr.apis import init_random_seed, set_random_seed, train_model
+from lmmSR.mmsr.datasets import build_dataset
+from lmmSR.mmsr.models import build_model
+from lmmSR.mmsr.utils import collect_env, get_root_logger, setup_multi_processes
 
 
 def parse_args():
@@ -32,12 +32,26 @@ def parse_args():
         type=int,
         default=1,
         help='number of gpus to use '
-             '(only applicable to non-distributed training)')
+        '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
+    parser.add_argument(
+        '--diff_seed',
+        action='store_true',
+        help='Whether or not set different seeds for different ranks')
     parser.add_argument(
         '--deterministic',
         action='store_true',
         help='whether to set deterministic options for CUDNN backend.')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. If the value to '
+        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+        'Note that the quotation marks are necessary and that no white space '
+        'is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
@@ -103,28 +117,28 @@ def main():
     logger.info('Config:\n{}'.format(cfg.text))
 
     # set random seeds（设置随机种子）
-    if args.seed is not None:
-        logger.info('Set random seed to {}, deterministic: {}'.format(
-            args.seed, args.deterministic))
-        set_random_seed(args.seed, deterministic=args.deterministic)
-    cfg.seed = args.seed
+    seed = init_random_seed(args.seed)
+    seed = seed + dist.get_rank() if args.diff_seed else seed
+    logger.info('Set random seed to {}, deterministic: {}'.format(
+        seed, args.deterministic))
+    set_random_seed(seed, deterministic=args.deterministic)
+    cfg.seed = seed
 
     # 构建模型
-    model = build_model(
-        cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
+    model = build_model(cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
-    # datasets = [build_dataset(cfg.data.train)]
-    # if len(cfg.workflow) == 2:
-    #     val_dataset = copy.deepcopy(cfg.data.val)
-    #     val_dataset.pipeline = cfg.data.train.pipeline
-    #     datasets.append(build_dataset(val_dataset))
-    # if cfg.checkpoint_config is not None:
-    #     # save version, config file content and class names in
-    #     # checkpoints as meta data
-    #     cfg.checkpoint_config.meta = dict(
-    #         mmedit_version=__version__,
-    #         config=cfg.text,
-    #     )
+    datasets = [build_dataset(cfg.data.train)]
+    if len(cfg.workflow) == 2:
+        val_dataset = copy.deepcopy(cfg.data.val)
+        val_dataset.pipeline = cfg.data.train.pipeline
+        datasets.append(build_dataset(val_dataset))
+    if cfg.checkpoint_config is not None:
+        # save version, config file content and class names in
+        # checkpoints as meta data
+        cfg.checkpoint_config.meta = dict(
+            mmedit_version=__version__,
+            config=cfg.text,
+        )
 
     # meta information（存储所有元信息，即一些环境、配置信息）
     meta = dict()
@@ -136,16 +150,16 @@ def main():
     meta['env_info'] = env_info
 
     # add an attribute for visualization convenience
-    # train_model(
-    #     model,
-    #     datasets,
-    #     cfg,
-    #     distributed=distributed,
-    #     validate=(not args.no_validate),
-    #     timestamp=timestamp,
-    #     meta=meta)
+    train_model(
+        model,
+        datasets,
+        cfg,
+        distributed=distributed,
+        validate=(not args.no_validate),
+        timestamp=timestamp,
+        meta=meta)
 
-    print(cfg)
+    # print(cfg)
 
 
 if __name__ == '__main__':

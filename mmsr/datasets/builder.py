@@ -1,17 +1,28 @@
 import copy
+import platform
 import random
 from functools import partial
 
 import numpy as np
 import torch
-from torch.utils.data import ConcatDataset, DataLoader
-
 from lmmcv.parallel import collate
 from lmmcv.runner import get_dist_info
 from lmmcv.utils import build_from_cfg
+from packaging import version
+from torch.utils.data import ConcatDataset, DataLoader
+
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
 from .samplers import DistributedSampler
+
+if platform.system() != 'Windows':
+    # https://github.com/pytorch/pytorch/issues/973
+    import resource
+    rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
+    base_soft_limit = rlimit[0]
+    hard_limit = rlimit[1]
+    soft_limit = min(max(4096, base_soft_limit), hard_limit)
+    resource.setrlimit(resource.RLIMIT_NOFILE, (soft_limit, hard_limit))
 
 
 def _concat_dataset(cfg, default_args=None):
@@ -55,8 +66,8 @@ def build_dataset(cfg, default_args=None):
     Returns:
         Dataset: The constructed dataset.
     """
-    if isinstance(cfg, (list, tuple)):      # 是元组中的一个返回 True
-        dataset = ConcatDataset([build_dataset(c, default_args) for c in cfg])      # 合并子数据集
+    if isinstance(cfg, (list, tuple)):
+        dataset = ConcatDataset([build_dataset(c, default_args) for c in cfg])
     elif cfg['type'] == 'RepeatDataset':
         dataset = RepeatDataset(
             build_dataset(cfg['dataset'], default_args), cfg['times'])
@@ -118,7 +129,8 @@ def build_dataloader(dataset,
             world_size,
             rank,
             shuffle=shuffle,
-            samples_per_gpu=samples_per_gpu)
+            samples_per_gpu=samples_per_gpu,
+            seed=seed)
         shuffle = False
         batch_size = samples_per_gpu
         num_workers = workers_per_gpu
@@ -131,7 +143,7 @@ def build_dataloader(dataset,
         worker_init_fn, num_workers=num_workers, rank=rank,
         seed=seed) if seed is not None else None
 
-    if torch.__version__ >= '1.7.0':
+    if version.parse(torch.__version__) >= version.parse('1.7.0'):
         kwargs['persistent_workers'] = persistent_workers
 
     data_loader = DataLoader(
@@ -165,3 +177,4 @@ def worker_init_fn(worker_id, num_workers, rank, seed):
     worker_seed = num_workers * rank + worker_id + seed
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+    torch.manual_seed(worker_seed)

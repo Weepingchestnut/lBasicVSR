@@ -1,16 +1,15 @@
 import logging
 
-from lmmcv import get_logger
+from lmmcv.utils import get_logger
 
 
 def get_root_logger(log_file=None, log_level=logging.INFO):
     """Get the root logger.
 
-    The logger will be initialized if it has not been initialized.
-    By default a StreamHandler will be added.
-    If `log_file` is specified, a FileHandler will also be added.
-    The name of the root logger is the top-level package name,
-    e.g., "mmsr".
+    The logger will be initialized if it has not been initialized. By default a
+    StreamHandler will be added. If `log_file` is specified, a FileHandler will
+    also be added. The name of the root logger is the top-level package name,
+    e.g., "mmedit".
 
     Args:
         log_file (str | None): The log filename. If specified, a FileHandler
@@ -22,6 +21,6 @@ def get_root_logger(log_file=None, log_level=logging.INFO):
     Returns:
         logging.Logger: The root logger.
     """
-    # root logger name: mmsr
+    # root logger name: mmedit
     logger = get_logger(__name__.split('.')[0], log_file, log_level)
     return logger
