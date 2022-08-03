@@ -70,24 +70,26 @@ data = dict(
         times=1000,
         dataset=dict(
             type=train_dataset_type,
-            lq_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_LR_bicubic/X4_sub',     # /home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_LR_bicubic/X4_sub
-            gt_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_HR_sub',
-            ann_file='/home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/meta_info_DIV2K800sub_GT.txt',
+            # lq_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_LR_bicubic/X4_sub',     # /home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_LR_bicubic/X4_sub
+            lq_folder='data/DIV2K/DIV2K_train_LR_bicubic/X4_sub',
+            # gt_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/DIV2K/DIV2K_train_HR_sub',
+            gt_folder='data/DIV2K/DIV2K_train_HR_sub',
+            ann_file='data/DIV2K/meta_info_DIV2K800sub_GT.txt',
             pipeline=train_pipeline,
             scale=scale)),
     val=dict(
         type=val_dataset_type,
-        lq_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/val_set5/Set5_bicLRx4',
+        lq_folder='data/val_set5/Set5_bicLRx4',
         # gt_folder='data/val_set5/Set5_mod12',
-        gt_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/val_set5/Set5',
+        gt_folder='data/val_set5/Set5',
         pipeline=test_pipeline,
         scale=scale,
         filename_tmpl='{}'),
     test=dict(
         type=val_dataset_type,
-        lq_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/val_set5/Set5_bicLRx4',
+        lq_folder='data/val_set5/Set5_bicLRx4',
         # gt_folder='data/val_set5/Set5_mod12',
-        gt_folder='/home/lzk/workspace/lopenmmlab/lmmSR/data/val_set5/Set5',
+        gt_folder='data/val_set5/Set5',
         pipeline=test_pipeline,
         scale=scale,
         filename_tmpl='{}'))
@@ -105,7 +107,7 @@ lr_config = dict(
 
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
 # evaluation = dict(interval=5000, save_image=True, gpu_collect=True)
-evaluation = dict(interval=5000, save_image=True)
+evaluation = dict(interval=200, save_image=True)
 log_config = dict(
     interval=100, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
 visual_config = None

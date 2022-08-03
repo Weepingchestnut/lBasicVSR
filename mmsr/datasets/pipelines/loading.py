@@ -4,8 +4,8 @@ import lmmcv
 import numpy as np
 from lmmcv.fileio import FileClient
 
-from lmmSR.mmsr.core.mask import (bbox2mask, brush_stroke_mask, get_irregular_mask,
-                              random_bbox)
+from mmsr.core.mask import (bbox2mask, brush_stroke_mask, get_irregular_mask,
+                            random_bbox)
 from ..registry import PIPELINES
 
 

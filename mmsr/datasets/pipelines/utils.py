@@ -147,7 +147,7 @@ def make_coord(shape, ranges=None, flatten=True):
         r = (v1 - v0) / (2 * n)
         seq = v0 + r + (2 * r) * torch.arange(n).float()
         coord_seqs.append(seq)
-    coord = torch.stack(torch.meshgrid(*coord_seqs), dim=-1)
+    coord = torch.stack(torch.meshgrid(*coord_seqs), dim=-1)    # torch.Size([187, 187, 2])
     if flatten:
-        coord = coord.view(-1, coord.shape[-1])
+        coord = coord.view(-1, coord.shape[-1])     # torch.Size([34969, 2])
     return coord

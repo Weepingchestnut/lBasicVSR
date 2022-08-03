@@ -2,9 +2,9 @@ import torch.nn as nn
 from lmmcv.cnn import ConvModule, build_conv_layer
 from lmmcv.runner import load_checkpoint
 
-from lmmSR.mmsr.models.common import generation_init_weights
-from lmmSR.mmsr.models.registry import COMPONENTS
-from lmmSR.mmsr.utils import get_root_logger
+from mmsr.models.common import generation_init_weights
+from mmsr.models.registry import COMPONENTS
+from mmsr.utils import get_root_logger
 
 
 @COMPONENTS.register_module()

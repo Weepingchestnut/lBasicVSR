@@ -4,7 +4,7 @@ import os.path as osp
 import lmmcv
 from lmmcv.runner import auto_fp16
 
-from lmmSR.mmsr.core import psnr, ssim, tensor2img
+from mmsr.core import psnr, ssim, tensor2img
 from ..base import BaseModel
 from ..builder import build_backbone, build_loss
 from ..registry import MODELS

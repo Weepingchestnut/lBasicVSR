@@ -85,7 +85,7 @@ class ImageToTensor:
         """
         for key in self.keys:
             # deal with gray scale img: expand a color channel
-            if len(results[key].shape) == 2:
+            if len(results[key].shape) == 2:    # 若为灰度图
                 results[key] = results[key][..., None]
             if self.to_float32 and not isinstance(results[key], np.float32):
                 results[key] = results[key].astype(np.float32)

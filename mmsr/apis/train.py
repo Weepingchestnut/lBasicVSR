@@ -11,10 +11,10 @@ from lmmcv.parallel import MMDataParallel
 from lmmcv.runner import HOOKS, IterBasedRunner, get_dist_info
 from lmmcv.utils import build_from_cfg
 
-from lmmSR.mmsr.core import DistEvalIterHook, EvalIterHook, build_optimizers
-from lmmSR.mmsr.core.distributed_wrapper import DistributedDataParallelWrapper
-from lmmSR.mmsr.datasets.builder import build_dataloader, build_dataset
-from lmmSR.mmsr.utils import get_root_logger
+from mmsr.core import DistEvalIterHook, EvalIterHook, build_optimizers
+from mmsr.core.distributed_wrapper import DistributedDataParallelWrapper
+from mmsr.datasets.builder import build_dataloader, build_dataset
+from mmsr.utils import get_root_logger
 
 
 def init_random_seed(seed=None, device='cuda'):

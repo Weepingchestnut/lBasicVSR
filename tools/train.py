@@ -10,11 +10,11 @@ import torch.distributed as dist
 from lmmcv import Config, DictAction
 from lmmcv.runner import init_dist
 
-from lmmSR.mmsr import __version__
-from lmmSR.mmsr.apis import init_random_seed, set_random_seed, train_model
-from lmmSR.mmsr.datasets import build_dataset
-from lmmSR.mmsr.models import build_model
-from lmmSR.mmsr.utils import collect_env, get_root_logger, setup_multi_processes
+from mmsr import __version__
+from mmsr.apis import init_random_seed, set_random_seed, train_model
+from mmsr.datasets import build_dataset
+from mmsr.models import build_model
+from mmsr.utils import collect_env, get_root_logger, setup_multi_processes
 
 
 def parse_args():

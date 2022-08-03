@@ -42,7 +42,7 @@ class RandomDownSampling:
         self.scale_max = scale_max
         self.patch_size = patch_size
         self.interpolation = interpolation
-        self.backend = backend
+        self.backend = backend      # 'pillow'
 
     def __call__(self, results):
         """Call function.
@@ -56,7 +56,7 @@ class RandomDownSampling:
                 modified 'gt', supplement 'lq' and 'scale' to keys.
         """
         img = results['gt']
-        scale = np.random.uniform(self.scale_min, self.scale_max)
+        scale = np.random.uniform(self.scale_min, self.scale_max)   # float
 
         if self.patch_size is None:
             h_lr = math.floor(img.shape[-3] / scale + 1e-9)
@@ -67,7 +67,7 @@ class RandomDownSampling:
             crop_lr, crop_hr = img_down, img
         else:
             w_lr = self.patch_size
-            w_hr = round(w_lr * scale)
+            w_hr = round(w_lr * scale)      # 四舍五入
             x0 = np.random.randint(0, img.shape[-3] - w_hr)
             y0 = np.random.randint(0, img.shape[-2] - w_hr)
             crop_hr = img[x0:x0 + w_hr, y0:y0 + w_hr, :]

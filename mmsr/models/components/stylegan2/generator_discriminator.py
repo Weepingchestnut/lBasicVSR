@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from lmmcv.runner.checkpoint import _load_checkpoint_with_prefix
 
-from lmmSR.mmsr.models.registry import COMPONENTS
+from mmsr.models.registry import COMPONENTS
 from .common import get_mean_latent, get_module_device, style_mixing
 from .modules import (ConstantInput, ConvDownLayer, EqualLinearActModule,
                       ModMBStddevLayer, ModulatedStyleConv, ModulatedToRGB,

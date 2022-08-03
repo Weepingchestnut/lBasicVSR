@@ -4,7 +4,7 @@ import math
 import torch
 from torch.utils.data import DistributedSampler as _DistributedSampler
 
-from lmmSR.mmsr.core.utils import sync_random_seed
+from mmsr.core.utils import sync_random_seed
 
 
 class DistributedSampler(_DistributedSampler):

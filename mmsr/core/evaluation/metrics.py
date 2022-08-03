@@ -6,7 +6,7 @@ import numpy as np
 from scipy.ndimage import convolve
 from scipy.special import gamma
 
-from lmmSR.mmsr.datasets.pipelines.matlab_like_resize import MATLABLikeResize
+from mmsr.datasets.pipelines.matlab_like_resize import MATLABLikeResize
 from .metric_utils import gauss_gradient
 
 

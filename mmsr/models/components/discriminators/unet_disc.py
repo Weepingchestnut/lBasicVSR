@@ -2,8 +2,8 @@ import torch.nn as nn
 from lmmcv.runner import load_checkpoint
 from torch.nn.utils import spectral_norm
 
-from lmmSR.mmsr.models.registry import COMPONENTS
-from lmmSR.mmsr.utils import get_root_logger
+from mmsr.models.registry import COMPONENTS
+from mmsr.utils import get_root_logger
 
 
 @COMPONENTS.register_module()

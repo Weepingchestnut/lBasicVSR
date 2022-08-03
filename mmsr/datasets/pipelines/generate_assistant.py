@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import torch
 
@@ -83,10 +85,10 @@ class GenerateHeatmap:
 class GenerateCoordinateAndCell:
     """Generate coordinate and cell.
 
-    Generate coordinate from the desired size of SR image.
+    Generate coordinate from the desired size of SR image. 从期望大小的SR图像中生成坐标
         Train or val:
-            1. Generate coordinate from GT.
-            2. Reshape GT image to (HgWg, 3) and transpose to (3, HgWg).
+            1. Generate coordinate from GT. 从GT生成坐标
+            2. Reshape GT image to (HgWg, 3) and transpose to (3, HgWg). 将GT图像reshape为(HgWg, 3)，并转置为(3, HgWg)
                 where `Hg` and `Wg` represent the height and width of GT.
         Test:
             Generate coordinate from LQ and scale or target_size.
@@ -132,9 +134,9 @@ class GenerateCoordinateAndCell:
         """
         # generate hr_coord (and hr_rgb)
         if 'gt' in results:
-            crop_hr = results['gt']
+            crop_hr = results['gt']     # torch.Size([3, 187, 187])
             self.target_size = crop_hr.shape
-            hr_rgb = crop_hr.contiguous().view(3, -1).permute(1, 0)
+            hr_rgb = crop_hr.contiguous().view(3, -1).permute(1, 0)     # torch.Size([34969, 3])
             results['gt'] = hr_rgb
         elif self.scale is not None and 'lq' in results:
             _, h_lr, w_lr = results['lq'].shape
@@ -148,11 +150,11 @@ class GenerateCoordinateAndCell:
         if self.sample_quantity is not None and 'gt' in results:
             sample_lst = np.random.choice(
                 len(hr_coord), self.sample_quantity, replace=False)
-            hr_coord = hr_coord[sample_lst]
-            results['gt'] = results['gt'][sample_lst]
+            hr_coord = hr_coord[sample_lst]                 # 随机取2304个GT的坐标
+            results['gt'] = results['gt'][sample_lst]       # torch.Size([2304, 3]) 从GT中取对应坐标的像素值
 
         # Preparations for cell decoding
-        cell = torch.ones_like(hr_coord)
+        cell = torch.ones_like(hr_coord)        # torch.Size([2304, 2])
         cell[:, 0] *= 2 / self.target_size[-2]
         cell[:, 1] *= 2 / self.target_size[-1]
 
@@ -166,3 +168,17 @@ class GenerateCoordinateAndCell:
         repr_str += (f'sample_quantity={self.sample_quantity}, '
                      f'scale={self.scale}, target_size={self.target_size}')
         return repr_str
+
+
+# @PIPELINES.register_module()
+# class CalculateMatrixAndMask:
+#     def __init__(self, add_scale=True):
+#         self.add_scale = add_scale
+#
+#     def __call__(self, inH, inW, scale):
+#         outH, outW = int(scale * inH), int(scale * inW)
+#
+#         scale_int = int(math.ceil(self.scale))
+#         h_offset = torch.ones(inH, scale_int, 1)
+
+

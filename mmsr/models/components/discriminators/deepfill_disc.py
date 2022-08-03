@@ -2,9 +2,9 @@ import torch.nn as nn
 from lmmcv.cnn import normal_init
 from lmmcv.runner import load_checkpoint
 
-from lmmSR.mmsr.models import build_component
-from lmmSR.mmsr.models.registry import COMPONENTS
-from lmmSR.mmsr.utils import get_root_logger
+from mmsr.models import build_component
+from mmsr.models.registry import COMPONENTS
+from mmsr.utils import get_root_logger
 
 
 @COMPONENTS.register_module()

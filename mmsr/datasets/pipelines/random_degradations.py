@@ -5,7 +5,7 @@ import random
 import cv2
 import numpy as np
 
-from lmmSR.mmsr.datasets.pipelines import blur_kernels as blur_kernels
+from mmsr.datasets.pipelines import blur_kernels as blur_kernels
 from ..registry import PIPELINES
 
 try:

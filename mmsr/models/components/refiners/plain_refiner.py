@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from lmmcv.cnn.utils.weight_init import xavier_init
 
-from lmmSR.mmsr.models.registry import COMPONENTS
+from mmsr.models.registry import COMPONENTS
 
 
 @COMPONENTS.register_module()

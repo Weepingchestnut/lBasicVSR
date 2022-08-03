@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from lmmSR.mmsr.models.builder import build_component
-from lmmSR.mmsr.models.registry import COMPONENTS
+from mmsr.models.builder import build_component
+from mmsr.models.registry import COMPONENTS
 
 
 @COMPONENTS.register_module()
