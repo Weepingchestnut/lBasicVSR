@@ -23,13 +23,6 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Copy of project-level server '222_CW_lmmsr'">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="lzk@222.25.173.28:13090">
         <serverdata>
           <mappings>
